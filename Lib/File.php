@@ -100,7 +100,13 @@ class File {
 
     public function isWritable() :bool
     {
-        return is_writable($this->path);
+        if($this->isExist){
+            return is_writable($this->path);
+        }else{
+            $dirArr = explode( '/', $this->path );
+            unset($dirArr[count($dirArr)-1]);
+            return is_writable( implode('/', $dirArr) );
+        }
     }
 
     public function getTimestamp() :string

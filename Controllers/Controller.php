@@ -97,7 +97,10 @@ class Controller {
         if( $prefixPath && !str_starts_with($path, $prefixPath) ) $path = $prefixPath.$path;
 
         $file = new File( $path);
-        return $file->getMeta();
+        $meta = $file->getMeta();
+        $meta['writable'] = $meta['writable'] ?? $this->isPathWritable($path);
+        return $meta;
+
     }
 
     public function getContent( string $param, object $request )
@@ -153,10 +156,10 @@ class Controller {
 
         $file = new File($path);
         
-        if( $file->isExist && !$file->isWritable() ){
+        if( !$file->isWritable() ){
             http_response_code( 401 );
             return [
-                'message'=>'No permission to write this file'
+                'message'=>'No permission to write to this path'
             ];
         }
 
