@@ -7,14 +7,32 @@ function is_JSON($string) {
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding");
 
+header('Access-Control-Allow-Credentials: true');
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+        header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+    }
+
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+        header("Access-Control-Allow-Headers: Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization");
+    }
+    exit(0);
+}
+
 $env = parse_ini_file('.env');
 $token = $env ? @$env['AUTH_TOKEN'] : false;
 
 if($_SERVER['REQUEST_METHOD']!='OPTIONS' && $token && (@$_SERVER['HTTP_AUTHORIZATION'])!=$token){
     http_response_code( 401 );
-    echo json_encode([
+    $result = json_encode([
         'message'=>'Unauthenticated'
     ]);
+
+    if( @$env['GZIP_COMPRESSED_RESPONSE'] ){
+        echo gzcompress( $result, 9);
+    }else{
+        echo $result;
+    }
     die();
 }
 
