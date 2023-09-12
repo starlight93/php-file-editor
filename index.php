@@ -21,6 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $env = parse_ini_file('.env');
 $token = $env ? @$env['AUTH_TOKEN'] : false;
+if( $env['PREFIX_PATH'] === '__DIR__' ){
+    $env['PREFIX_PATH'] = __DIR__;
+}
 
 if($_SERVER['REQUEST_METHOD']!='OPTIONS' && $token && (@$_SERVER['HTTP_AUTHORIZATION'])!=$token){
     http_response_code( 401 );

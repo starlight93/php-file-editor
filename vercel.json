@@ -1,0 +1,21 @@
+{
+    "version": 2,
+    "builds": [
+        { "src": "/index.php", "use": "vercel-php@0.6.0" }
+    ],
+    "routes": [
+        {
+            "src": "/assets/(.*)",
+            "dest": "assets/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/index.php"
+        }
+    ],
+    "env": {
+        "AUTH_TOKEN": "123456",
+        "GZIP_COMPRESSED_RESPONSE": "true",
+        "PREFIX_PATH": "__DIR__"
+    }
+}
