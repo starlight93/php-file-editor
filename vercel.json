@@ -1,12 +1,13 @@
 {
     "version": 2,
     "builds": [
-        { "src": "/index.php", "use": "vercel-php@0.6.0" }
+        { "src": "/index.php", "use": "vercel-php@0.6.0" },
+        { "src": "/assets/*", "use": "@vercel/static" }
     ],
     "routes": [
         {
             "src": "/assets/(.*)",
-            "dest": "assets/$1"
+            "dest": "/assets/$1"
         },
         {
             "src": "/(.*)",
@@ -14,8 +15,8 @@
         }
     ],
     "env": {
-        "AUTH_TOKEN": "123456",
-        "GZIP_COMPRESSED_RESPONSE": "true",
+        "AUTHORIZATION_TOKEN": "",
+        "GZIP_COMPRESSED_RESPONSE": "",
         "PREFIX_PATH": "__DIR__"
     }
 }
