@@ -23,13 +23,21 @@ class Controller {
 
     public function index( string $param,object $request )
     {
+
+        $protocol = @$_SERVER['HTTPS']? 'https://': 'http://';
         return [
-            "message" => "File & Directory Online Editor API",
+            "Desicription" => "File & Directory Native PHP Editor",
+            "Repo" => "https://github.com/starlight93/php-file-editor.git",
+            "current_environment"=>[
+                "PREFIX_PATH"=>@$this->env ['PREFIX_PATH']??'',
+                "IS_GZIP_COMPRESSED"=>@$this->env ['GZIP_COMPRESSED_RESPONSE']?true:false
+            ],
             "routes" =>[
                 "/getStructure" =>[
-                    "method" => "GET",
-                    "params" => [
-                        "path" => "string (required), example: /home/users/downloads",
+                    "url" => $protocol.$_SERVER['HTTP_HOST']."/getStructure?path=/",
+                    "method" => "GET/POST",
+                    "query_or_body" => [
+                        "path" => "string (required), example: /",
                         "nested" => "true(default), format response to nested folder or list only",
                         "search" => "string (optional), search file by matching their filename against keyword",
                         "contain" => "string (optional), search file by matching their content contain keyword"
@@ -37,12 +45,12 @@ class Controller {
                     "description" => "List Files & Directories Recursively",
                 ],
                 "/getContent" =>[
-                    "method" => "GET",
-                    "params" => [
-                        "path" => "string (required), example: /home/users/downloads/myfile.txt",
+                    "method" => "GET/POST",
+                    "query_or_body" => [
+                        "path" => "string (required), example: /myfile.txt",
                         "highlight" => "true/false, default:true"
                     ],
-                    "description" => "Get text content",
+                    "description" => "Get text content of a file",
                 ],
                 "/setContent" =>[
                     "method" => "POST",
@@ -54,12 +62,19 @@ class Controller {
                     ],
                     "description" => "Set text content to a new or existing file",
                 ],
-                "/delete" =>[
-                    "method" => "GET",
-                    "body" => [
+                "/getMeta" =>[
+                    "method" => "GET/POST",
+                    "query_or_body" => [
                         "path" => "string (required), example: /home/users/downloads/myfile.txt"
                     ],
-                    "description" => "Unlink File",
+                    "description" => "Get Meta Data of The File or Folder",
+                ],
+                "/delete" =>[
+                    "method" => "GET/POST",
+                    "query_or_body" => [
+                        "path" => "string (required), example: /home/users/downloads/myfile.txt"
+                    ],
+                    "description" => "Unlink File or Empty Directory",
                 ]
             ]
         ];
