@@ -12,7 +12,7 @@ class File {
     {
         $this->path = $path;        
         $this->isExist = file_exists( $this->path );
-        $this->content = $this->isExist? file_get_contents( $path ): '';
+        $this->content = $this->isExist && is_file($this->path) ? file_get_contents( $this->path ): '';
     }
 
     public function setContent( string $content ): void
@@ -22,10 +22,12 @@ class File {
 
     public function getMeta(): array
     {
+        $stat = stat($this->path);
         return [
-            'owner' => function_exists('posix_getpwuid')?posix_getpwuid( fileowner( $this->path ) )['name']:'function posix_getpwuid does not exist',
+            'owner' => function_exists('posix_getpwuid')?posix_getpwuid( $stat['uid'] )['name']:'function posix_getpwuid does not exist',
             'user' => get_current_user(),
-            'last_edited' => date( 'd/M/y H:i:s', filemtime($this->path) ),
+            'last_edited' => date( 'd/M/y H:i:s', $stat['mtime'] ),
+            'size' => number_format( $stat['size'],0 ),
             'path' => $this->path,
             'writable' => is_writable($this->path)
         ];
