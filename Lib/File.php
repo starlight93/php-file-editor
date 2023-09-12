@@ -23,7 +23,7 @@ class File {
     public function getMeta(): array
     {
         return [
-            'owner' => posix_getpwuid( fileowner( $this->path ) )['name'],
+            'owner' => function_exists('posix_getpwuid')?posix_getpwuid( fileowner( $this->path ) )['name']:'function posix_getpwuid does not exist',
             'user' => get_current_user(),
             'last_edited' => date( 'd/M/y H:i:s', filemtime($this->path) ),
             'path' => $this->path,

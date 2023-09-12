@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require_once "Controllers/Controller.php";
 function is_JSON($string) {
     return (is_null(json_decode($string))) ? FALSE : TRUE;
@@ -20,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $env = parse_ini_file('.env');
-$token = $env ? @$env['AUTH_TOKEN'] : false;
+$token = $env ? @$env['AUTHORIZATION_TOKEN'] : false;
 if( $env['PREFIX_PATH'] === '__DIR__' ){
     $env['PREFIX_PATH'] = __DIR__;
 }
@@ -48,7 +49,7 @@ $bodyArr = [];
 $method = $_SERVER['REQUEST_METHOD'];
 
 if( $method == 'GET' ){
-    $queryStr = $_SERVER['QUERY_STRING'];
+    $queryStr = @$_SERVER['QUERY_STRING']??'';
     parse_str(  $queryStr, $bodyArr);
 }elseif( $method == 'POST' ) {
     $bodyTxt = file_get_contents('php://input')??"[]";
